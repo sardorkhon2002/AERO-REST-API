@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  app:
+    container_name: nodejs-app
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=aero
+      - DB_PASSWORD=secret
+      - DB_NAME=api
+      - DB_PORT=3306
+    depends_on:
+      - mysql
+
+  mysql:
+    container_name: mysql
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: api
+      MYSQL_USER: aero
+      MYSQL_PASSWORD: secret
+    volumes:
+      - db:/var/lib/mysql
+      - ./initdb/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql
+
+volumes:
+  db:
